@@ -1,11 +1,14 @@
+import 'package:compentency_test_muhammad/presentations/providers/user_selection_Viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class SecondPage extends StatelessWidget {
   const SecondPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.read<UserSelectionViewmodel>();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -32,17 +35,24 @@ class SecondPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   const Text("Welcome", style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 4),
-                  const Text(
-                    "Second Screen",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  viewModel.userName != null
+                      ? Text(
+                        viewModel.userName!,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                      : Container(),
                 ],
               ),
 
-              const Center(
+              Center(
                 child: Text(
-                  "Selected User Name",
-                  style: TextStyle(fontSize: 18),
+                  viewModel.selectedUser != null
+                      ? "${viewModel.selectedUser!.firstName!} ${viewModel.selectedUser!.lastName!}"
+                      : "Selected User Name",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
 
@@ -57,7 +67,7 @@ class SecondPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    context.push("/second");
+                    context.push("/third");
                   },
                   child: const Text(
                     "Choose a User",

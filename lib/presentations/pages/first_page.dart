@@ -1,4 +1,4 @@
-import 'package:compentency_test_muhammad/presentations/providers/palindrome_Viewmodel.dart';
+import 'package:compentency_test_muhammad/presentations/providers/user_selection_Viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,9 +8,57 @@ class FirstPage extends StatelessWidget {
   final palindromeController = TextEditingController();
 
   FirstPage({super.key});
+  void showAnimatedDialog(BuildContext context, String message) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation1, animation2) {
+        return Center(
+          child: Material(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Result",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(message),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("OK"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+          child: child,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.read<UserSelectionViewmodel>();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -65,21 +113,14 @@ class FirstPage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      final result = context
-                          .read<PalindromeViewModel>()
-                          .checkPalindrome(
-                            nameController.text,
-                            palindromeController.text,
-                          );
-                      if (result) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Palindrome")),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Not Palindrome")),
-                        );
-                      }
+                      final result = viewModel.checkPalindrome(
+                        nameController.text,
+                        palindromeController.text,
+                      );
+                      showAnimatedDialog(
+                        context,
+                        result ? "isPalindrome" : "Not Palindrome",
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff2B637B),
@@ -106,6 +147,10 @@ class FirstPage extends StatelessWidget {
                     ),
                     onPressed: () {
                       context.push("/second");
+                      viewModel.userName =
+                          nameController.text.trim() != ""
+                              ? nameController.text
+                              : null;
                     },
                     child: const Text(
                       "Next",
