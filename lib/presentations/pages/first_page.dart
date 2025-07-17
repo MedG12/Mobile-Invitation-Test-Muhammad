@@ -78,7 +78,7 @@ class FirstPage extends StatelessWidget {
                   backgroundImage:
                       Image.asset("assets/images/ic_photo.png").image,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 60),
                 TextFormField(
                   controller: nameController,
                   decoration: const InputDecoration(
@@ -106,7 +106,7 @@ class FirstPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
 
                 SizedBox(
                   height: 50,
